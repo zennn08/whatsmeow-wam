@@ -40,17 +40,22 @@ carries:
 - **exported `InfoQuery` / `IQSet` + `SendIQ`** (`request.go`) — so the uploader
   can send the `w:stats` IQ and wait for the server ack.
 
-The fork keeps the upstream module path `go.mau.fi/whatsmeow`, so point Go at it
-with a `replace`:
+The fork keeps the upstream module path `go.mau.fi/whatsmeow`, so **your own
+module** must point Go at the fork with a `replace`. Go ignores `replace`
+directives from dependencies, so the one in this repo's `go.mod` does *not* apply
+to you — you have to add it yourself, or the build fails on the missing
+`RawNodeHandler` / `SendIQ`:
 
 ```
 go get github.com/zennn08/whatsmeow-wam
-go mod edit -replace go.mau.fi/whatsmeow=github.com/zennn08/whatsmeow@latest
+go mod edit -replace go.mau.fi/whatsmeow=github.com/zennn08/whatsmeow@wam
 go mod tidy
 ```
 
-For local development the two repos sit side by side and this module's `go.mod`
-uses `replace go.mau.fi/whatsmeow => ../whatsmeow`.
+Pin to the exact commit instead of the `wam` branch for reproducible builds:
+`...=github.com/zennn08/whatsmeow@c6079a2`. (This repo's own `go.mod` already
+carries that pin so its tests build against the fork; consumers still need their
+own replace as above.)
 
 ## Quick start
 
