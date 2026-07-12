@@ -1,5 +1,8 @@
 # whatsmeow-wam
 
+[![CI](https://github.com/zennn08/whatsmeow-wam/actions/workflows/ci.yml/badge.svg)](https://github.com/zennn08/whatsmeow-wam/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 WhatsApp Web **WAM** (Falco analytics/telemetry) for
 [whatsmeow](https://github.com/tulir/whatsmeow) — a Go port of zapo-js's
 [`@zapo-js/wam`](https://github.com/vinikjkkj/zapo/tree/main/packages/wam).
@@ -249,3 +252,11 @@ it undetectable — WhatsApp can still identify a non-browser client through its
 missing telemetry stream); it is best-effort anti-fingerprinting with the
 documented approximations above, not a guarantee. Using an unofficial client
 carries account-ban risk regardless. Use responsibly.
+
+## License
+
+MIT — see [LICENSE](LICENSE). This is a Go port of zapo-js's
+[`@zapo-js/wam`](https://github.com/vinikjkkj/zapo/tree/main/packages/wam) (MIT);
+the embedded registry is extracted from
+[`@vinikjkkj/wa-wam`](https://www.npmjs.com/package/@vinikjkkj/wa-wam). It depends
+on [whatsmeow](https://github.com/tulir/whatsmeow) (MPL-2.0).
