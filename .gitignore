@@ -1,0 +1,12 @@
+# SQLite session stores created by the example
+*.db
+*.db-wal
+*.db-shm
+
+# Built binaries
+*.exe
+/example/example
+/example/whatsmeow-wam-example
+
+# Editor / OS
+.DS_Store
