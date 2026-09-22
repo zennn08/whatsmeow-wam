@@ -1,10 +1,10 @@
 module github.com/zennn08/whatsmeow-wam
 
-go 1.25.0
+go 1.26.0
 
 require (
 	go.mau.fi/whatsmeow v0.0.0
-	google.golang.org/protobuf v1.36.11
+	google.golang.org/protobuf v1.36.12
 )
 
 require (
@@ -18,12 +18,12 @@ require (
 	github.com/rs/zerolog v1.35.1 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.27 // indirect
 	go.mau.fi/libsignal v0.2.2 // indirect
-	go.mau.fi/util v0.9.10 // indirect
-	golang.org/x/crypto v0.53.0 // indirect
-	golang.org/x/net v0.56.0 // indirect
-	golang.org/x/sync v0.21.0 // indirect
-	golang.org/x/sys v0.46.0 // indirect
-	golang.org/x/text v0.38.0 // indirect
+	go.mau.fi/util v0.10.1 // indirect
+	golang.org/x/crypto v0.57.0 // indirect
+	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/sync v0.23.0 // indirect
+	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
 )
 
-replace go.mau.fi/whatsmeow => github.com/zennn08/whatsmeow v0.0.0-20260712104647-78b01f45f15b
+replace go.mau.fi/whatsmeow => github.com/zennn08/whatsmeow v0.0.0-20260922051012-72fc9db468cd

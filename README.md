@@ -51,13 +51,13 @@ to you — you have to add it yourself, or the build fails on the missing
 
 ```
 go get github.com/zennn08/whatsmeow-wam
-go mod edit -replace go.mau.fi/whatsmeow=github.com/zennn08/whatsmeow@fork-2026-07-12
+go mod edit -replace go.mau.fi/whatsmeow=github.com/zennn08/whatsmeow@fork-22-09-2026
 go mod tidy
 ```
 
-`fork-2026-07-12` is the maintained fork (recent upstream whatsmeow + the two WAM
+`fork-22-09-2026` is the maintained fork (recent upstream whatsmeow + the two WAM
 patches). Pin to an exact commit for reproducible builds:
-`...=github.com/zennn08/whatsmeow@78b01f4`. (This repo's own `go.mod` already
+`...=github.com/zennn08/whatsmeow@72fc9db`. (This repo's own `go.mod` already
 carries that pin so its tests build against the fork; consumers still need their
 own replace as above.) The minimal `wam` branch — the same two patches on plain
 upstream `main` — also works if you don't want the rest of the fork.
@@ -142,8 +142,9 @@ Step by step:
    identity), then each event as `commitTime` + header + fields. The encoder is
    byte-identical to zapo's — the same batch produces the same bytes.
 4. **Flush.** A batch flushes on the 5s coalesce interval, when it reaches 50 KB,
-   or on `Close`. Flushing is gated on `IsConnected`; a batch built while
-   disconnected is dropped.
+   or on `Close`. Flushing is gated on `IsConnected` and `IsRegistered`; a batch
+   built while disconnected, or before the client has registered credentials, is
+   dropped.
 5. **Upload.** `Transport.Upload` wraps the bytes in the `<iq xmlns="w:stats">`
    stanza and sends it via the fork's `SendIQ`, waiting for the server ack.
    Transient 5xx errors retry with exponential backoff; a permanent failure drops
@@ -202,6 +203,7 @@ All optional (upload needs a `Transport`, wired for you by `NewCoordinator`):
 | `Globals` | derived from client | OS / browser / app version stamped in every batch |
 | `Transport` | whatsmeow socket | Uploads finalized batches; nil builds-and-drops |
 | `IsConnected` | `cli.IsConnected` | Gates uploads; a batch built while disconnected is dropped |
+| `IsRegistered` | `cli.Store.ID != nil` | Gates uploads on registered credentials; no telemetry before login |
 | `FlushInterval` | 5s | Coalesce window before a non-empty batch flushes |
 | `MaxBufferSize` | 50000 | Byte size that forces an immediate flush |
 | `DisableSampling` | `false` | Skip the `rand()*weight > 1` gate (keep every event) |

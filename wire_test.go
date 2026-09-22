@@ -161,6 +161,29 @@ func TestUnknownEventIgnored(t *testing.T) {
 	}
 }
 
+// TestUploadGatedOnRegistration mirrors zapo @zapo-js/wam 0.1.1: a batch is
+// dropped while the client has no registered credentials, even on a live socket.
+func TestUploadGatedOnRegistration(t *testing.T) {
+	var count int
+	registered := false
+	c := New(Options{
+		DisableSampling: true,
+		IsRegistered:    func() bool { return registered },
+		Transport:       transportFunc(func(_ context.Context, _ []byte) error { count++; return nil }),
+	})
+	c.Commit("UiAction", map[string]any{"uiActionType": "CHAT_OPEN"})
+	c.Flush(context.Background())
+	if count != 0 {
+		t.Fatalf("unregistered client uploaded %d batches", count)
+	}
+	registered = true
+	c.Commit("UiAction", map[string]any{"uiActionType": "CHAT_OPEN"})
+	c.Flush(context.Background())
+	if count != 1 {
+		t.Fatalf("registered client uploaded %d batches, want 1", count)
+	}
+}
+
 type transportFunc func(context.Context, []byte) error
 
 func (f transportFunc) Upload(ctx context.Context, b []byte) error { return f(ctx, b) }

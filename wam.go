@@ -36,6 +36,10 @@ type Options struct {
 	// IsConnected gates uploads; a batch built while disconnected is dropped.
 	// Nil defaults to always-connected.
 	IsConnected func() bool
+	// IsRegistered gates uploads on the client having registered credentials,
+	// so nothing is uploaded before login even on a live socket.
+	// Nil defaults to always-registered.
+	IsRegistered func() bool
 	// FlushInterval coalesces events before a non-empty batch flushes.
 	// Zero uses the registry default (5s).
 	FlushInterval time.Duration
@@ -63,6 +67,7 @@ type Coordinator struct {
 	flushInterval time.Duration
 	maxBufferSize int
 	isConnected   func() bool
+	isRegistered  func() bool
 	rng           func() float64
 
 	mu          sync.Mutex
@@ -91,6 +96,10 @@ func New(opts Options) *Coordinator {
 	if isConn == nil {
 		isConn = func() bool { return true }
 	}
+	isReg := opts.IsRegistered
+	if isReg == nil {
+		isReg = func() bool { return true }
+	}
 	rng := opts.rng
 	if rng == nil {
 		rng = rand.Float64
@@ -102,6 +111,7 @@ func New(opts Options) *Coordinator {
 		flushInterval: flush,
 		maxBufferSize: maxBuf,
 		isConnected:   isConn,
+		isRegistered:  isReg,
 		rng:           rng,
 		globals:       make(map[string][]globalKV),
 		openBatches:   make(map[string]*batch),
@@ -224,8 +234,8 @@ func (c *Coordinator) uploadCtx(ctx context.Context, b *batch) {
 	if b == nil || !b.hasEvents() {
 		return
 	}
-	if !c.isConnected() {
-		c.logf("wam batch dropped: not connected (channel=%s size=%d)", b.channel, b.size())
+	if !c.isConnected() || !c.isRegistered() {
+		c.logf("wam batch dropped: not connected or unregistered (channel=%s size=%d)", b.channel, b.size())
 		return
 	}
 	if c.opts.Transport == nil {

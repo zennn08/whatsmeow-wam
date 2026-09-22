@@ -112,7 +112,8 @@ func sleep(ctx context.Context, d time.Duration) error {
 
 // NewCoordinator builds a wam.Coordinator wired to a whatsmeow client: uploads go
 // over its socket via cli.DangerousInternals().SendIQ, uploads are gated on
-// cli.IsConnected, and globals derive from the advertised device identity
+// cli.IsConnected plus a registered Store.ID (no telemetry before login), and
+// globals derive from the advertised device identity
 // (store.DeviceProps + the active WA version).
 //
 // Browser is not something whatsmeow advertises (it pairs as a desktop companion,
@@ -133,6 +134,9 @@ func NewCoordinator(cli *whatsmeow.Client, opts wam.Options) *wam.Coordinator {
 	}
 	if opts.IsConnected == nil {
 		opts.IsConnected = cli.IsConnected
+	}
+	if opts.IsRegistered == nil {
+		opts.IsRegistered = func() bool { return cli.Store != nil && cli.Store.ID != nil }
 	}
 	return wam.New(opts)
 }
