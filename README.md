@@ -51,11 +51,11 @@ to you — you have to add it yourself, or the build fails on the missing
 
 ```
 go get github.com/zennn08/whatsmeow-wam
-go mod edit -replace go.mau.fi/whatsmeow=github.com/zennn08/whatsmeow@fork-22-09-2026
+go mod edit -replace go.mau.fi/whatsmeow=github.com/zennn08/whatsmeow@fork-2026-09-22
 go mod tidy
 ```
 
-`fork-22-09-2026` is the maintained fork (recent upstream whatsmeow + the two WAM
+`fork-2026-09-22` is the maintained fork (recent upstream whatsmeow + the two WAM
 patches). Pin to an exact commit for reproducible builds:
 `...=github.com/zennn08/whatsmeow@72fc9db`. (This repo's own `go.mod` already
 carries that pin so its tests build against the fork; consumers still need their
